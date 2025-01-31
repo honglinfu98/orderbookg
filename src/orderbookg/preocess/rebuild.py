@@ -60,10 +60,10 @@ def process_order_book(
                 feature_names_raw[j] + str(i)
             ]  # Add to raw features' names the level number.
 
-    statistics_columns = ['mid_price', 'spread', 'best_ask_volume', 'best_bid_volume' ,'volume_imbalance']
+    statistics_columns = ['mid_price', 'best_ask_volume', 'best_bid_volume' ,'volume_imbalance', 'spread', 'spread_bp']
 
 
-    for orderbook_name in csv_orderbook[:2]:
+    for orderbook_name in csv_orderbook[2:]:
         print(orderbook_name)
 
         # read the CSV file into a Pandas DataFrame
@@ -156,7 +156,11 @@ def process_order_book(
                 # mid price is the hightest bid price plus the lowest ask price divided by 2
                 mid_price = (best_ask_p + best_bid_p) / 2
                 # spread = (best_ask_p - best_bid_p) / best_ask_p
-                spread = (best_ask_p - best_bid_p) / mid_price
+                spread = best_ask_p - best_bid_p
+                spread_bp = (best_ask_p - best_bid_p) / mid_price
+
+
+
 
                 # actual ask depth
                 
@@ -175,7 +179,7 @@ def process_order_book(
 
                 order_book_snapshot_statistic = [row['timestamp']]
 
-                order_book_snapshot_statistics.append(order_book_snapshot_statistic + [mid_price,spread, best_ask_v, best_bid_v ,volume_imbalance])
+                order_book_snapshot_statistics.append(order_book_snapshot_statistic + [mid_price, best_ask_v, best_bid_v ,volume_imbalance, spread, spread_bp])
 
                 # Save the order_book_snapshot as pandas DataFrame
 
@@ -184,7 +188,9 @@ def process_order_book(
         order_book_snapshot_statistics_df = pd.DataFrame(order_book_snapshot_statistics, columns=['timestamp'] + statistics_columns)
         #tick size
         tick_size = infer_tick_size(list(order_book["asks"].keys())+ list(order_book["bids"].keys()))
+        spread_tick = order_book_snapshot_statistics_df["spread"] / tick_size
         # add one more column to the statistics dataframe for the tick size
+        order_book_snapshot_statistics_df['spread_tick'] = spread_tick 
         order_book_snapshot_statistics_df['tick_size'] = tick_size 
 
         # Save the order_book_snapshot_df and order_book_snapshot_statistics_df as CSV files  

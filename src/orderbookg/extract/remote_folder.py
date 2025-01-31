@@ -3,7 +3,7 @@ from google.cloud import storage
 from orderbookg.settings import PROJECT_ROOT
 # Set the path to your credentials file
 
-os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'credentials.json'
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = f'{PROJECT_ROOT}/credentials.json'
 
 def download_blob(bucket_name, source_blob_name, destination_file_name):
     try:
@@ -137,7 +137,7 @@ def download_specific_file(bucket_name, exchange, instrument, commodity, month, 
 
 if __name__ == "__main__":
     #     # Define your bucket name, exchanges list, instruments list, and base prefix
-    # bucket_name = 'kaiko-delivery-cloudburst'
+    bucket_name = 'kaiko-delivery-cloudburst'
     # exchanges = [
     #     'bbit', 'bbsp', 'bfly', 'bfnx', 'binc', 'bnus', 'bthb', 'btmx', 'cbse', 
     #     'delt', 'drbt', 'eris', 'gmni', 'hbdm', 'huob', 'itbi', 'krkn', 'nvdx', 
@@ -184,9 +184,11 @@ if __name__ == "__main__":
 
 
     # download specific file
-    date_string_ls = []
-    for i in range(18,22):
-        date_string_ls.append(f"2024-08-{i}")
-    for i in date_string_ls:
-        download_specific_file(bucket_name, 'bnus', 'spot', 'btcusdt', '2024-08' ,i)
+    # date_string_ls = []
+    # for i in range(18,22):
+    #     date_string_ls.append(f"2024-08-{i}")
+    # for i in date_string_ls:
+    #     download_specific_file(bucket_name, 'binc', 'spot', 'btcusdt', '2024-08' ,i)
+
+    download_specific_file(bucket_name, 'binc', 'spot', 'btcusdt', '2024-08' ,'2024-08-18')
 
